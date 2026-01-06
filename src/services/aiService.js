@@ -10,7 +10,6 @@ async function listModels() {
   try {
     const response = await fetch(`https://generativelanguage.googleapis.com/v1/models?key=${API_KEY}`)
     const data = await response.json()
-    console.log('📋 Available Gemini models:', data.models?.map(m => m.name))
     return data.models
   } catch (error) {
     console.error('Failed to list models:', error)
@@ -68,10 +67,8 @@ Return JSON only:
   }
 
   const data = await response.json()
-  console.log('Gemini raw response:', data)
   
   const content = data.candidates[0].content.parts[0].text.trim()
-  console.log('Gemini content:', content)
   
   // Extract JSON from response
   const jsonMatch = content.match(/\{[\s\S]*\}/)
@@ -94,18 +91,14 @@ Return JSON only:
 export async function generateWord(category, difficulty) {
   // Check if API key exists
   if (!API_KEY) {
-    console.log('🔑 No API key found - using fallback words from JSON')
     return null
   }
 
   try {
-    console.log(`🤖 Generating word with Gemini for ${category} (${difficulty})...`)
     const result = await generateWithGemini(category, difficulty)
-    console.log('✅ AI generated word:', result)
     return result
   } catch (error) {
     console.error('❌ Gemini API failed:', error.message)
-    console.log('📚 Falling back to JSON words')
     return null
   }
 }

@@ -91,7 +91,6 @@ const getWord = async (selectedCategory, level) => {
     const aiResult = await generateWord(selectedCategory, level)
     
     if (aiResult && aiResult.word && aiResult.hints) {
-      console.log('✅ Using AI-generated word')
       return aiResult
     }
   } catch (error) {
@@ -99,7 +98,6 @@ const getWord = async (selectedCategory, level) => {
   }
   
   // Fallback to JSON file
-  console.log('📚 Using fallback words from JSON')
   return getFromFallback(selectedCategory, level)
 }
 
