@@ -4,6 +4,12 @@
     :level-selected="levelSelected" 
     @select-level="selectLevel"
   />
+  <div v-else-if="isLoading" class="loading-screen">
+    <div class="loading-content">
+      <div class="spinner"></div>
+      <p>Generating your word...</p>
+    </div>
+  </div>
   <div v-else>
     <Header />
     <Score :score="currentScore" :level="difficulty" :category="category" />
@@ -39,111 +45,8 @@ import LevelSelector from './components/LevelSelector.vue'
 import Score from './components/Score.vue'
 import Hints from './components/Hints.vue'
 import onKeyDown from './assets/onKeydown'
-
-// Word lists by category and difficulty with contextual hints
-const wordsByCategory = {
-  cricket: {
-    easy: [
-      { word: 'dhoni', hints: ['Captain Cool', 'Wicket-keeper batsman', 'Led India to 2011 World Cup'] },
-      { word: 'virat', hints: ['Run machine', 'Modern Indian captain', 'Chase master'] },
-      { word: 'sachin', hints: ['God of cricket', '100 international centuries', 'Little Master'] },
-      { word: 'rohit', hints: ['Mumbai Indians captain','ODI double century record','Hitman'] },
-      { word:'yuvraj', hints: ['All-rounder', '2011 World Cup hero', 'Six sixes in an over'] }
-    ],
-    medium: [
-      { word: 'bumrah', hints: ['Death over specialist', 'Unique bowling action', 'India\'s pace ace'] },
-      { word: 'hardik', hints: ['All-rounder', 'Big hitter', 'Gujarat Titans captain'] },
-      { word: 'ravi', hints: ['Former Indian captain', 'Head coach', 'Batting maestro'] },
-      { word: 'gambhir', hints: ['2011 World Cup hero', 'KKR captain', 'Delhi batsman'] }
-    ],
-    hard: [
-      { word: 'dravid', hints: ['The Wall', 'Reliable batsman', 'Indian coach'] },
-      { word: 'jadeja', hints: ['All-rounder from Saurashtra', 'Rockstar', 'Gun fielder'] },
-      { word: 'ashwin', hints: ['Off-spinner', 'Test specialist', 'Tamil Nadu cricketer'] },
-      { word: 'suryakumar', hints: ['Mr. 360', 'T20 specialist', 'Mumbai batsman'] }
-    ]
-  },
-  cinema: {
-    easy: [
-      { word: 'ram', hints: ['Mega Power Star', 'Racha hero', 'Son of Chiranjeevi'] },
-      { word: 'pawan', hints: ['Power Star', 'Vakeel Saab hero', 'Brother of Chiranjeevi'] },
-      { word: 'nani', hints: ['Natural Star', 'Jersey hero', 'Gang Leader actor'] },
-      { word: 'vijay', hints: ['Thalapathy', 'Tamil superstar', 'Beast hero'] }
-    ],
-    medium: [
-      { word: 'mahesh', hints: ['Superstar', 'Pokiri hero', 'Son of Krishna'] },
-      { word: 'prabhas', hints: ['Darling', 'Baahubali hero', 'Pan-India star'] },
-      { word: 'allu', hints: ['Stylish Star', 'Pushpa hero', 'Son of Allu Aravind'] },
-      { word: 'jr', hints: ['Young Tiger', 'RRR hero', 'Son of NTR'] }
-    ],
-    hard: [
-      { word: 'chiranjeevi', hints: ['Mega Star', 'Indra hero', 'First Padma Vibhushan in Telugu'] },
-      { word: 'nagarjuna', hints: ['Akkineni hero', 'Manmadhudu actor', 'Bigg Boss host'] },
-      { word: 'venkatesh', hints: ['Victory Venkatesh', 'F2 hero', 'Drushyam actor'] },
-      { word: 'balakrishna', hints: ['Nandamuri hero', 'Akhanda actor', 'Son of NTR'] }
-    ]
-  },
-  technology: {
-    easy: [
-      { word: 'java', hints: ['Programming language', 'Coffee-named', 'Object-oriented'] },
-      { word: 'code', hints: ['Instructions for computers', 'What programmers write', 'Source of software'] },
-      { word: 'cloud', hints: ['Online storage', 'Remote computing', 'AWS, Azure offer this'] },
-      { word: 'data', hints: ['Digital information', 'Stored in databases', 'Raw facts'] }
-    ],
-    medium: [
-      { word: 'python', hints: ['Snake-named language', 'Popular for AI/ML', 'Easy to learn'] },
-      { word: 'server', hints: ['Provides services', 'Hosts websites', 'Backend computer'] },
-      { word: 'github', hints: ['Code hosting platform', 'Version control', 'Owned by Microsoft'] },
-      { word: 'docker', hints: ['Container platform', 'Whale logo', 'DevOps tool'] }
-    ],
-    hard: [
-      { word: 'javascript', hints: ['Web language', 'Runs in browsers', 'Node.js uses this'] },
-      { word: 'kubernetes', hints: ['Container orchestration', 'K8s shortform', 'Google created'] },
-      { word: 'typescript', hints: ['Superset of JavaScript', 'Microsoft developed', 'Adds static typing'] },
-      { word: 'blockchain', hints: ['Decentralized ledger', 'Cryptocurrency tech', 'Immutable records'] }
-    ]
-  },
-  food: {
-    easy: [
-      { word: 'rice', hints: ['Staple grain', 'Biryani base', 'Asian favorite'] },
-      { word: 'dosa', hints: ['South Indian breakfast', 'Made from fermented batter', 'Crispy crepe'] },
-      { word: 'pizza', hints: ['Italian flatbread', 'Has cheese and toppings', 'Round and sliced'] },
-      { word: 'pasta', hints: ['Italian noodles', 'Many shapes', 'Spaghetti is one type'] }
-    ],
-    medium: [
-      { word: 'biryani', hints: ['Spiced rice dish', 'Hyderabadi specialty', 'Layered cooking'] },
-      { word: 'samosa', hints: ['Fried pastry', 'Triangular shape', 'Filled with potatoes'] },
-      { word: 'burger', hints: ['Fast food', 'Has buns and patty', 'McDonald\'s specialty'] },
-      { word: 'noodles', hints: ['Long thin strips', 'Chinese dish', 'Made from flour'] }
-    ],
-    hard: [
-      { word: 'quesadilla', hints: ['Mexican dish', 'Filled tortilla', 'Grilled and folded'] },
-      { word: 'cappuccino', hints: ['Coffee drink', 'Italian beverage', 'Espresso with foam'] },
-      { word: 'shawarma', hints: ['Middle Eastern wrap', 'Meat on spit', 'Pita bread wrap'] },
-      { word: 'croissant', hints: ['French pastry', 'Crescent shaped', 'Buttery and flaky'] }
-    ]
-  },
-  places: {
-    easy: [
-      { word: 'india', hints: ['Asian country', 'Second most populous', 'Has 28 states'] },
-      { word: 'delhi', hints: ['Indian capital', 'Old and New', 'Red Fort location'] },
-      { word: 'paris', hints: ['City of Light', 'Eiffel Tower city', 'French capital'] },
-      { word: 'dubai', hints: ['UAE city', 'Burj Khalifa location', 'Desert metropolis'] }
-    ],
-    medium: [
-      { word: 'mumbai', hints: ['Financial capital', 'Bollywood city', 'Gateway of India'] },
-      { word: 'london', hints: ['British capital', 'Big Ben location', 'Thames river city'] },
-      { word: 'tokyo', hints: ['Japanese capital', 'Largest metro area', 'Mount Fuji nearby'] },
-      { word: 'sydney', hints: ['Australian city', 'Opera House location', 'Harbor Bridge'] }
-    ],
-    hard: [
-      { word: 'hyderabad', hints: ['City of Pearls', 'IT hub of India', 'Charminar landmark'] },
-      { word: 'singapore', hints: ['Island city-state', 'Marina Bay Sands', 'Southeast Asian hub'] },
-      { word: 'amsterdam', hints: ['Dutch capital', 'Canal city', 'Bicycles everywhere'] },
-      { word: 'barcelona', hints: ['Spanish city', 'Sagrada Familia', 'Mediterranean port'] }
-    ]
-  }
-}
+import { generateWord } from './services/aiService'
+import fallbackWords from './data/words.json'
 
 // Game state
 const difficulty = ref('')
@@ -155,6 +58,7 @@ const guessedLetters = ref([])
 const hintsRemaining = ref(3)
 const usedHints = ref([])
 const currentScore = ref(100)
+const isLoading = ref(false)
 
 // Computed properties
 const letters = computed(() => word.value.split(''))
@@ -170,20 +74,51 @@ const status = computed(() => {
   return ''
 })
 
-// Helper functions
-const randomWord = (selectedCategory, level) => {
-  const words = wordsByCategory[selectedCategory][level]
+// Helper function to get word from fallback JSON
+const getFromFallback = (selectedCategory, level) => {
+  const words = fallbackWords[selectedCategory][level]
   const selected = words[Math.floor(Math.random() * words.length)]
   return selected
 }
 
-const selectLevel = (selection) => {
+// Main function to get word - tries AI first, falls back to JSON
+const getWord = async (selectedCategory, level) => {
+  try {
+    // Try to generate with AI
+    const aiResult = await generateWord(selectedCategory, level)
+    
+    if (aiResult && aiResult.word && aiResult.hints) {
+      console.log('✅ Using AI-generated word')
+      return aiResult
+    }
+  } catch (error) {
+    console.warn('AI generation failed, using fallback:', error)
+  }
+  
+  // Fallback to JSON file
+  console.log('📚 Using fallback words from JSON')
+  return getFromFallback(selectedCategory, level)
+}
+
+const selectLevel = async (selection) => {
   difficulty.value = selection.difficulty
   category.value = selection.category
   levelSelected.value = true
-  const selected = randomWord(selection.category, selection.difficulty)
-  word.value = selected.word
-  wordHints.value = selected.hints
+  isLoading.value = true
+  
+  try {
+    const selected = await getWord(selection.category, selection.difficulty)
+    word.value = selected.word
+    wordHints.value = selected.hints
+  } catch (error) {
+    console.error('Error loading word:', error)
+    // Final fallback if everything fails
+    const fallback = getFromFallback(selection.category, selection.difficulty)
+    word.value = fallback.word
+    wordHints.value = fallback.hints
+  } finally {
+    isLoading.value = false
+  }
 }
 
 const reset = () => {
@@ -238,6 +173,43 @@ onKeyDown(event => {
 </script>
 
 <style>
+.loading-screen {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.loading-content {
+  text-align: center;
+  color: white;
+}
+
+.spinner {
+  width: 50px;
+  height: 50px;
+  border: 5px solid rgba(255, 255, 255, 0.3);
+  border-top-color: white;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin: 0 auto 20px;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.loading-content p {
+  font-size: 1.2rem;
+  font-weight: 600;
+  margin: 0;
+}
+
 .game-layout {
   display: flex;
   justify-content: center;
