@@ -19,13 +19,13 @@
   </svg>
 </template>
 
-<script>
-export default {
-  name: 'HangmanFigure',
-  props: { wrongCount: { type: Number, default: 0 } },
-  setup(props) {
-    const lte = num => props.wrongCount >= num
-    return { lte }
+<script setup>
+const props = defineProps({
+  wrongCount: {
+    type: Number,
+    default: 0
   }
-}
+})
+
+const lte = (num) => props.wrongCount >= num
 </script>

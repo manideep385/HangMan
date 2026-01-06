@@ -8,8 +8,11 @@
         </div>
     </div>
 </template>
-<script>
-export default {
-    props: { wrongLetters: { type: Array, default: () => [] } }
-}
+<script setup>
+defineProps({
+  wrongLetters: {
+    type: Array,
+    default: () => []
+  }
+})
 </script>

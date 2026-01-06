@@ -6,12 +6,15 @@
     </div>
 </template>
 
-<script>
-export default {
-    name: 'HangmanWord',
-    props: {
-        letters: { type: Array, required: true },
-        correctLetters: { type: Array, default: () => [] }
-    }
-}
+<script setup>
+defineProps({
+  letters: {
+    type: Array,
+    required: true
+  },
+  correctLetters: {
+    type: Array,
+    default: () => []
+  }
+})
 </script>

@@ -4,9 +4,11 @@
   </div>
 </template>
 
-<script>
-export default {
-  name: 'HangmanNotification',
-  props: { show: { type: Boolean, default: false } }
-}
+<script setup>
+defineProps({
+  show: {
+    type: Boolean,
+    default: false
+  }
+})
 </script>

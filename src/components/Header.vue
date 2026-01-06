@@ -3,8 +3,6 @@
     <p>Find the hidden word - enter a letter</p>
 </template>
 
-<script>
-export default {
-    name: 'HangmanHeader'
-}
+<script setup>
+// No props or state needed for this component
 </script>
