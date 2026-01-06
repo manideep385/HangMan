@@ -24,10 +24,14 @@
         <p class="sub-description">Challenge your vocabulary and spelling skills!</p>
       </div>
 
+      <!-- Difficulty Selection -->
       <div class="difficulty-section">
         <h2 class="section-title">Choose Your Difficulty Level</h2>
         <div class="level-buttons">
-          <button @click="selectLevel('easy')" class="level-btn easy">
+          <button 
+            @click="selectDifficulty('easy')" 
+            :class="['level-btn', 'easy', { selected: selectedDifficulty === 'easy' }]"
+          >
             <div class="btn-icon">🌱</div>
             <div class="btn-content">
               <span class="btn-title">Easy</span>
@@ -36,7 +40,10 @@
             <div class="btn-glow"></div>
           </button>
 
-          <button @click="selectLevel('medium')" class="level-btn medium">
+          <button 
+            @click="selectDifficulty('medium')" 
+            :class="['level-btn', 'medium', { selected: selectedDifficulty === 'medium' }]"
+          >
             <div class="btn-icon">⚡</div>
             <div class="btn-content">
               <span class="btn-title">Medium</span>
@@ -45,7 +52,10 @@
             <div class="btn-glow"></div>
           </button>
 
-          <button @click="selectLevel('hard')" class="level-btn hard">
+          <button 
+            @click="selectDifficulty('hard')" 
+            :class="['level-btn', 'hard', { selected: selectedDifficulty === 'hard' }]"
+          >
             <div class="btn-icon">🔥</div>
             <div class="btn-content">
               <span class="btn-title">Hard</span>
@@ -56,25 +66,90 @@
         </div>
       </div>
 
-      <div class="features">
-        <div class="feature-item">
-          <span class="feature-icon">💡</span>
-          <span class="feature-text">3 Hints Available</span>
+      <!-- Category Selection (Optional) -->
+      <div v-if="selectedDifficulty" class="category-section">
+        <div class="category-grid">
+          <button 
+            @click="selectCategoryOption('cricket')" 
+            :class="['category-card', { selected: selectedCategory === 'cricket' }]"
+          >
+            <div class="category-icon">🏏</div>
+            <div class="category-name">Cricket</div>
+          </button>
+
+          <button 
+            @click="selectCategoryOption('cinema')" 
+            :class="['category-card', { selected: selectedCategory === 'cinema' }]"
+          >
+            <div class="category-icon">🎬</div>
+            <div class="category-name">Cinema</div>
+          </button>
+
+          <button 
+            @click="selectCategoryOption('technology')" 
+            :class="['category-card', { selected: selectedCategory === 'technology' }]"
+          >
+            <div class="category-icon">💻</div>
+            <div class="category-name">Technology</div>
+          </button>
+
+          <button 
+            @click="selectCategoryOption('food')" 
+            :class="['category-card', { selected: selectedCategory === 'food' }]"
+          >
+            <div class="category-icon">🍕</div>
+            <div class="category-name">Food</div>
+          </button>
+
+          <button 
+            @click="selectCategoryOption('places')" 
+            :class="['category-card', { selected: selectedCategory === 'places' }]"
+          >
+            <div class="category-icon">🌍</div>
+            <div class="category-name">Places</div>
+          </button>
         </div>
-        <div class="feature-item">
-          <span class="feature-icon">🏆</span>
-          <span class="feature-text">Score up to 100 Points</span>
-        </div>
+      </div>
+
+      <!-- Start Button -->
+      <div v-if="selectedDifficulty" class="start-button-container">
+        <button @click="startGame" class="start-btn">
+          Start Game 🎯
+        </button>
       </div>
     </div>
   </div>
 </template>
 
 <script setup>
+import { ref } from 'vue'
+
 const emit = defineEmits(['selectLevel'])
 
-const selectLevel = (level) => {
-  emit('selectLevel', level)
+const selectedDifficulty = ref('')
+const selectedCategory = ref('')
+
+const selectDifficulty = (level) => {
+  selectedDifficulty.value = level
+}
+
+const selectCategoryOption = (category) => {
+  selectedCategory.value = category
+}
+
+const startGame = () => {
+  let category = selectedCategory.value
+  
+  // If no category selected, pick random
+  if (!category) {
+    const categories = ['cricket', 'cinema', 'technology', 'food', 'places']
+    category = categories[Math.floor(Math.random() * categories.length)]
+  }
+  
+  emit('selectLevel', {
+    difficulty: selectedDifficulty.value,
+    category: category
+  })
 }
 </script>
 
@@ -90,7 +165,9 @@ const selectLevel = (level) => {
   justify-content: center;
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   z-index: 1000;
-  overflow: hidden;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 20px 0;
 }
 
 .animated-background {
@@ -150,6 +227,8 @@ const selectLevel = (level) => {
   max-width: 900px;
   width: 90%;
   animation: fadeInUp 0.8s ease-out;
+  margin: auto;
+  padding-bottom: 40px;
 }
 
 @keyframes fadeInUp {
@@ -164,7 +243,7 @@ const selectLevel = (level) => {
 }
 
 .title-section {
-  margin-bottom: 50px;
+  margin-bottom: 30px;
 }
 
 .hangman-icon {
@@ -185,13 +264,12 @@ const selectLevel = (level) => {
 }
 
 .main-title {
-  font-size: 4rem;
+  font-size: 3.5rem;
   font-weight: 900;
   color: #fff;
-  margin: 0.5;
-  margin: 15px 0 5px 0;
-  font-weight: 600;
+  margin: 10px 0 5px 0;
   letter-spacing: 1px;
+  text-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
 }
 
 .sub-description {
@@ -220,20 +298,20 @@ const selectLevel = (level) => {
 }
 
 .difficulty-section {
-  margin-bottom: 40px;
+  margin-bottom: 25px;
 }
 
 .section-title {
   color: #fff;
-  font-size: 2rem;
-  margin-bottom: 30px;
+  font-size: 1.6rem;
+  margin-bottom: 20px;
   font-weight: 600;
   text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
 }
 
 .level-buttons {
   display: flex;
-  gap: 30px;
+  gap: 20px;
   flex-wrap: wrap;
   justify-content: center;
 }
@@ -241,10 +319,10 @@ const selectLevel = (level) => {
 .level-btn {
   position: relative;
   padding: 0;
-  width: 220px;
-  height: 160px;
+  width: 180px;
+  height: 130px;
   border: none;
-  border-radius: 20px;
+  border-radius: 15px;
   cursor: pointer;
   overflow: hidden;
   transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
@@ -252,8 +330,8 @@ const selectLevel = (level) => {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 10px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+  gap: 8px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
 }
 
 .level-btn::before {
@@ -307,8 +385,8 @@ const selectLevel = (level) => {
 }
 
 .btn-icon {
-  font-size: 3rem;
-  margin-bottom: 5px;
+  font-size: 2.5rem;
+  margin-bottom: 3px;
   filter: drop-shadow(0 2px 5px rgba(0, 0, 0, 0.2));
 }
 
@@ -320,7 +398,7 @@ const selectLevel = (level) => {
 }
 
 .btn-title {
-  font-size: 1.8rem;
+  font-size: 1.5rem;
   font-weight: 800;
   color: white;
   text-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
@@ -344,61 +422,311 @@ const selectLevel = (level) => {
   background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
 }
 
-.features {
-  display: flex;
-  gap: 40px;
-  justify-content: center;
-  flex-wrap: wrap;
-  margin-top: 30px;
+.level-btn.selected {
+  transform: translateY(-10px) scale(1.1);
+  box-shadow: 0 20px 50px rgba(255, 255, 255, 0.3), 0 0 0 4px rgba(255, 255, 255, 0.5);
 }
 
-.feature-item {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  background: rgba(255, 255, 255, 0.15);
-  padding: 15px 30px;
-  border-radius: 50px;
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  transition: all 0.3s;
+/* Category Section */
+.category-section {
+  margin-top: 25px;
+  margin-bottom: 20px;
+  animation: fadeInUp 0.5s ease-out;
 }
 
-.feature-item:hover {
-  background: rgba(255, 255, 255, 0.25);
-  transform: translateY(-3px);
+.optional {
+  font-size: 1.3rem;
+  color: rgba(255, 255, 255, 0.7);
+  font-weight: 400;
 }
 
-.feature-icon {
-  font-size: 1.5rem;
-}
-
-.feature-text {
-  color: white;
-  font-weight: 600;
+.category-hint {
+  color: rgba(255, 255, 255, 0.85);
   font-size: 1rem;
+  margin: -10px 0 15px 0;
+  font-style: italic;
+}
+
+.category-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 15px;
+  max-width: 700px;
+  margin: 0 auto;
+}
+
+.category-card {
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(10px);
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  border-radius: 12px;
+  padding: 15px 10px;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.category-card:hover {
+  background: rgba(255, 255, 255, 0.25);
+  transform: translateY(-5px);
+  border-color: rgba(255, 255, 255, 0.4);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+}
+
+.category-card.selected {
+  background: rgba(255, 255, 255, 0.35);
+  border-color: rgba(255, 255, 255, 0.6);
+  transform: translateY(-5px) scale(1.05);
+  box-shadow: 0 10px 30px rgba(255, 255, 255, 0.2);
+}
+
+.category-icon {
+  font-size: 2rem;
+  filter: drop-shadow(0 2px 5px rgba(0, 0, 0, 0.2));
+}
+
+.category-name {
+  color: white;
+  font-size: 1.1rem;
+  font-weight: 700;
+  text-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.category-desc {
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 0.85rem;
+  font-weight: 500;
+}
+
+/* Start Button */
+.start-button-container {
+  margin-top: 25px;
+  margin-bottom: 20px;
+  animation: fadeInUp 0.6s ease-out;
+}
+
+.start-btn {
+  background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+  color: white;
+  border: none;
+  padding: 15px 50px;
+  font-size: 1.3rem;
+  font-weight: 800;
+  border-radius: 50px;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  box-shadow: 0 8px 25px rgba(245, 87, 108, 0.4);
+  text-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.start-btn:hover {
+  transform: translateY(-5px) scale(1.05);
+  box-shadow: 0 15px 40px rgba(245, 87, 108, 0.5);
+}
+
+.start-btn:active {
+  transform: translateY(-2px) scale(1.02);
 }
 
 @media (max-width: 768px) {
+  .level-selector {
+    padding: 10px 0;
+  }
+  
+  .content {
+    width: 95%;
+    padding-bottom: 30px;
+  }
+  
+  .title-section {
+    margin-bottom: 20px;
+  }
+  
   .main-title {
-    font-size: 3rem;
-  }
-  
-  .subtitle {
-    font-size: 1.2rem;
-  }
-  
-  .level-btn {
-    width: 180px;
-    height: 140px;
-  }
-  
-  .btn-icon {
     font-size: 2.5rem;
   }
   
+  .subtitle {
+    font-size: 1.1rem;
+  }
+  
+  .sub-description {
+    font-size: 0.9rem;
+  }
+  
+  .section-title {
+    font-size: 1.4rem;
+    margin-bottom: 15px;
+  }
+  
+  .difficulty-section {
+    margin-bottom: 20px;
+  }
+  
+  .level-buttons {
+    gap: 12px;
+  }
+  
+  .level-btn {
+    width: 150px;
+    height: 110px;
+  }
+  
+  .btn-icon {
+    font-size: 2rem;
+  }
+  
   .btn-title {
-    font-size: 1.5rem;
+    font-size: 1.3rem;
+  }
+  
+  .btn-desc {
+    font-size: 0.8rem;
+  }
+  
+  .category-section {
+    margin-top: 20px;
+    margin-bottom: 15px;
+  }
+  
+  .category-grid {
+    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+    gap: 12px;
+  }
+  
+  .category-icon {
+    font-size: 1.8rem;
+  }
+  
+  .category-name {
+    font-size: 0.95rem;
+  }
+  
+  .category-desc {
+    font-size: 0.7rem;
+  }
+  
+  .start-button-container {
+    margin-top: 20px;
+    margin-bottom: 15px;
+  }
+  
+  .start-btn {
+    padding: 12px 40px;
+    font-size: 1.2rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .level-selector {
+    padding: 5px 0;
+  }
+  
+  .content {
+    width: 95%;
+    padding-bottom: 20px;
+  }
+  
+  .title-section {
+    margin-bottom: 15px;
+  }
+  
+  .hangman-icon svg {
+    width: 60px;
+    height: 75px;
+  }
+  
+  .main-title {
+    font-size: 2rem;
+  }
+  
+  .subtitle {
+    font-size: 0.95rem;
+  }
+  
+  .sub-description {
+    font-size: 0.8rem;
+  }
+  
+  .section-title {
+    font-size: 1.2rem;
+    margin-bottom: 12px;
+  }
+  
+  .optional {
+    font-size: 1rem;
+  }
+  
+  .difficulty-section {
+    margin-bottom: 15px;
+  }
+  
+  .level-buttons {
+    gap: 10px;
+  }
+  
+  .level-btn {
+    width: 140px;
+    height: 100px;
+  }
+  
+  .btn-icon {
+    font-size: 1.8rem;
+  }
+  
+  .btn-title {
+    font-size: 1.1rem;
+  }
+  
+  .btn-desc {
+    font-size: 0.75rem;
+  }
+  
+  .category-section {
+    margin-top: 15px;
+    margin-bottom: 12px;
+  }
+  
+  .category-hint {
+    font-size: 0.85rem;
+    margin: -8px 0 12px 0;
+  }
+  
+  .category-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+  }
+  
+  .category-card {
+    padding: 12px 8px;
+  }
+  
+  .category-icon {
+    font-size: 1.6rem;
+  }
+  
+  .category-name {
+    font-size: 0.9rem;
+  }
+  
+  .category-desc {
+    font-size: 0.65rem;
+  }
+  
+  .start-button-container {
+    margin-top: 15px;
+    margin-bottom: 10px;
+  }
+  
+  .start-btn {
+    padding: 12px 35px;
+    font-size: 1.1rem;
+    width: 90%;
+    max-width: 250px;
   }
 }
 </style>
