@@ -11,6 +11,9 @@
     </div>
   </div>
   <div v-else>
+    <button @click="goBackHome" class="back-home-btn" title="Back to Home">
+      🏠 Home
+    </button>
     <Header />
     <Score :score="currentScore" :level="difficulty" :category="category" />
     <div class="game-layout">
@@ -133,6 +136,10 @@ const reset = () => {
   currentScore.value = 100
 }
 
+const goBackHome = () => {
+  reset()
+}
+
 const provideHint = () => {
   if (hintsRemaining.value > 0 && wordHints.value.length > 0) {
     const hintIndex = 3 - hintsRemaining.value
@@ -235,4 +242,31 @@ onKeyDown(event => {
     align-items: center;
   }
 }
+
+.back-home-btn {
+  position: fixed;
+  top: 20px;
+  left: 20px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 25px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  transition: all 0.3s;
+  z-index: 100;
+}
+
+.back-home-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+}
+
+.back-home-btn:active {
+  transform: translateY(0);
+}
+
 </style>
