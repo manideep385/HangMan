@@ -65,7 +65,7 @@ const wordsByCategory = {
   },
   cinema: {
     easy: [
-      { word: 'ram', hints: ['Mega Power Star', 'Racha hero', 'Nephew of Chiranjeevi'] },
+      { word: 'ram', hints: ['Mega Power Star', 'Racha hero', 'Son of Chiranjeevi'] },
       { word: 'pawan', hints: ['Power Star', 'Vakeel Saab hero', 'Brother of Chiranjeevi'] },
       { word: 'nani', hints: ['Natural Star', 'Jersey hero', 'Gang Leader actor'] },
       { word: 'vijay', hints: ['Thalapathy', 'Tamil superstar', 'Beast hero'] }
