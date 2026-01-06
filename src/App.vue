@@ -10,24 +10,26 @@
       <p>Generating your word...</p>
     </div>
   </div>
-  <div v-else>
+  <div v-else class="game-screen">
     <button @click="goBackHome" class="back-home-btn" title="Back to Home">
       🏠 Home
     </button>
-    <Header />
-    <Score :score="currentScore" :level="difficulty" :category="category" />
-    <div class="game-layout">
-      <div class="game-container">
-        <Figure :wrong-count="wrongLetters.length"/>
-        <WrongLetters :wrong-letters="wrongLetters"/>
-        <Word :letters="letters" :correct-letters="correctLetters"/>
+    <div class="game-content">
+      <Header />
+      <Score :score="currentScore" :level="difficulty" :category="category" />
+      <div class="game-layout">
+        <div class="game-container">
+          <Figure :wrong-count="wrongLetters.length"/>
+          <WrongLetters :wrong-letters="wrongLetters"/>
+          <Word :letters="letters" :correct-letters="correctLetters"/>
+        </div>
+        <Hints 
+          :hints-remaining="hintsRemaining" 
+          :used-hints="usedHints"
+          :game-over="status !== ''"
+          @request-hint="provideHint"
+        />
       </div>
-      <Hints 
-        :hints-remaining="hintsRemaining" 
-        :used-hints="usedHints"
-        :game-over="status !== ''"
-        @request-hint="provideHint"
-      />
     </div>
     <Popup :status="status" :word="word" :score="currentScore" @reset="reset"/>
     <Notification :show="notification"/>
@@ -178,6 +180,21 @@ onKeyDown(event => {
 </script>
 
 <style>
+/* Game Screen Container */
+.game-screen {
+  width: 100%;
+  min-height: 100vh;
+  position: relative;
+  padding-top: 70px;
+}
+
+.game-content {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 20px 40px;
+}
+
+/* Loading Screen */
 .loading-screen {
   position: fixed;
   top: 0;
@@ -188,6 +205,7 @@ onKeyDown(event => {
   align-items: center;
   justify-content: center;
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  z-index: 9999;
 }
 
 .loading-content {
@@ -215,32 +233,26 @@ onKeyDown(event => {
   margin: 0;
 }
 
+/* Game Layout */
 .game-layout {
-  display: flex;
-  justify-content: center;
-  align-items: flex-start;
+  display: grid;
+  grid-template-columns: 1fr auto;
   gap: 40px;
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 20px;
-  flex-wrap: wrap;
+  align-items: start;
+  margin-top: 20px;
 }
 
 .game-container {
-  flex: 1;
-  min-width: 300px;
   display: flex;
   flex-direction: column;
   align-items: center;
+  gap: 30px;
+  width: 100%;
+  max-width: 600px;
+  margin: 0 auto;
 }
 
-@media (max-width: 968px) {
-  .game-layout {
-    flex-direction: column;
-    align-items: center;
-  }
-}
-
+/* Back Home Button */
 .back-home-btn {
   position: fixed;
   top: 20px;
@@ -255,7 +267,7 @@ onKeyDown(event => {
   cursor: pointer;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
   transition: all 0.3s;
-  z-index: 100;
+  z-index: 1000;
 }
 
 .back-home-btn:hover {
@@ -267,4 +279,97 @@ onKeyDown(event => {
   transform: translateY(0);
 }
 
+/* Tablet Styles (768px - 1024px) */
+@media (max-width: 1024px) {
+  .game-layout {
+    grid-template-columns: 1fr;
+    gap: 30px;
+    justify-items: center;
+  }
+  
+  .game-container {
+    max-width: 500px;
+  }
+}
+
+/* Mobile Landscape & Small Tablets (481px - 768px) */
+@media (max-width: 768px) {
+  .game-screen {
+    padding-top: 60px;
+  }
+  
+  .game-content {
+    padding: 0 15px 30px;
+  }
+  
+  .game-layout {
+    gap: 25px;
+    margin-top: 15px;
+  }
+  
+  .game-container {
+    gap: 20px;
+    max-width: 450px;
+  }
+  
+  .back-home-btn {
+    top: 15px;
+    left: 15px;
+    padding: 10px 20px;
+    font-size: 0.95rem;
+  }
+}
+
+/* Mobile Portrait (up to 480px) */
+@media (max-width: 480px) {
+  .game-screen {
+    padding-top: 55px;
+  }
+  
+  .game-content {
+    padding: 0 10px 20px;
+  }
+  
+  .game-layout {
+    gap: 20px;
+    margin-top: 10px;
+  }
+  
+  .game-container {
+    gap: 15px;
+    max-width: 100%;
+  }
+  
+  .back-home-btn {
+    top: 10px;
+    left: 10px;
+    padding: 8px 16px;
+    font-size: 0.85rem;
+  }
+  
+  .spinner {
+    width: 40px;
+    height: 40px;
+  }
+  
+  .loading-content p {
+    font-size: 1rem;
+  }
+}
+
+/* Extra Small Devices (up to 375px) */
+@media (max-width: 375px) {
+  .game-screen {
+    padding-top: 50px;
+  }
+  
+  .game-content {
+    padding: 0 8px 15px;
+  }
+  
+  .back-home-btn {
+    padding: 6px 12px;
+    font-size: 0.8rem;
+  }
+}
 </style>

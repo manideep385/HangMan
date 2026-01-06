@@ -46,27 +46,25 @@ const requestHint = () => {
 <style scoped>
 .hints-container {
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  padding: 25px;
+  padding: 20px;
   border-radius: 15px;
-  min-width: 320px;
+  width: 100%;
   max-width: 400px;
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
   border: 2px solid rgba(255, 255, 255, 0.2);
-  position: sticky;
-  top: 20px;
 }
 
 .hints-header {
   display: flex;
   flex-direction: column;
-  gap: 15px;
-  margin-bottom: 20px;
+  gap: 12px;
+  margin-bottom: 15px;
 }
 
 .hints-header h3 {
   margin: 0;
   color: #fff;
-  font-size: 1.4rem;
+  font-size: 1.3rem;
   font-weight: 700;
   text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
   text-align: center;
@@ -76,10 +74,10 @@ const requestHint = () => {
   background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
   color: white;
   border: none;
-  padding: 14px 24px;
+  padding: 12px 20px;
   border-radius: 25px;
   cursor: pointer;
-  font-size: 1.1rem;
+  font-size: 1.05rem;
   font-weight: 600;
   transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
   box-shadow: 0 4px 15px rgba(245, 87, 108, 0.4);
@@ -108,12 +106,12 @@ const requestHint = () => {
 .hints-list {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 10px;
 }
 
 .hint-item {
   background: rgba(255, 255, 255, 0.95);
-  padding: 15px;
+  padding: 12px;
   border-radius: 10px;
   border-left: 4px solid #f5576c;
   animation: slideIn 0.4s ease-out;
@@ -124,12 +122,12 @@ const requestHint = () => {
   font-weight: 700;
   color: #f5576c;
   margin-right: 8px;
-  font-size: 1rem;
+  font-size: 0.95rem;
 }
 
 .hint-text {
   color: #2c3e50;
-  font-size: 0.95rem;
+  font-size: 0.9rem;
   line-height: 1.5;
 }
 
@@ -144,11 +142,97 @@ const requestHint = () => {
   }
 }
 
-@media (max-width: 968px) {
+/* Tablet (768px - 1024px) */
+@media (max-width: 1024px) {
   .hints-container {
-    position: static;
+    max-width: 450px;
+    margin: 0 auto;
+  }
+}
+
+/* Mobile Landscape & Small Tablets (481px - 768px) */
+@media (max-width: 768px) {
+  .hints-container {
     max-width: 100%;
-    min-width: auto;
+    padding: 18px;
+  }
+  
+  .hints-header h3 {
+    font-size: 1.2rem;
+  }
+  
+  .hint-btn {
+    padding: 11px 18px;
+    font-size: 1rem;
+  }
+  
+  .hint-item {
+    padding: 11px;
+  }
+  
+  .hint-number {
+    font-size: 0.9rem;
+  }
+  
+  .hint-text {
+    font-size: 0.85rem;
+  }
+}
+
+/* Mobile Portrait (up to 480px) */
+@media (max-width: 480px) {
+  .hints-container {
+    padding: 15px;
+  }
+  
+  .hints-header {
+    gap: 10px;
+    margin-bottom: 12px;
+  }
+  
+  .hints-header h3 {
+    font-size: 1.1rem;
+  }
+  
+  .hint-btn {
+    padding: 10px 16px;
+    font-size: 0.95rem;
+  }
+  
+  .hints-list {
+    gap: 8px;
+  }
+  
+  .hint-item {
+    padding: 10px;
+  }
+  
+  .hint-number {
+    font-size: 0.85rem;
+  }
+  
+  .hint-text {
+    font-size: 0.8rem;
+  }
+}
+
+/* Extra Small Devices (up to 375px) */
+@media (max-width: 375px) {
+  .hints-container {
+    padding: 12px;
+  }
+  
+  .hints-header h3 {
+    font-size: 1rem;
+  }
+  
+  .hint-btn {
+    padding: 9px 14px;
+    font-size: 0.9rem;
+  }
+  
+  .hint-item {
+    padding: 9px;
   }
 }
 </style>
